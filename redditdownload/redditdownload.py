@@ -325,6 +325,8 @@ def main():
     if sort_type:
         sort_type = sort_type.lower()
 
+    # Image count to prepend to filename
+    image_count = 1
     while not FINISHED:
         ITEMS = getitems(
             ARGS.reddit, multireddit=ARGS.multireddit, previd=LAST,
@@ -422,14 +424,16 @@ def main():
 
                     # create filename based on given input from user
                     if ARGS.filename_format == 'url':
-                        FILENAME = '%s%s%s' % (pathsplitext(pathbasename(URL))[0], '', FILEEXT)
+                        FILENAME = '%05d - %s%s%s' % (image_count, pathsplitext(pathbasename(URL))[0], '', FILEEXT)
                     elif ARGS.filename_format == 'title':
-                        FILENAME = '%s%s%s' % (slugify(ITEM['title']), FILENUM, FILEEXT)
+                        FILENAME = '%05d - %s%s%s' % (image_count, slugify(ITEM['title']), FILENUM, FILEEXT)
                         if len(FILENAME) >= 256:
                             shortened_item_title = slugify(ITEM['title'])[:256-len(FILENAME)]
-                            FILENAME = '%s%s%s' % (shortened_item_title, FILENUM, FILEEXT)
+                            FILENAME = '%05d - %s%s%s' % (image_count, shortened_item_title, FILENUM, FILEEXT)
                     else:
-                        FILENAME = '%s%s%s' % (ITEM['id'], FILENUM, FILEEXT)
+                        FILENAME = '%05d - %s%s%s' % (image_count, ITEM['id'], FILENUM, FILEEXT)
+                    
+                    image_count += 1  # Increment the image count
                     # join file with directory
                     FILEPATH = pathjoin(ARGS.dir, FILENAME)
 
